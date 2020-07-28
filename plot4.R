@@ -1,0 +1,24 @@
+setwd("C:/Users/xavie/OneDrive/Escritorio/plots/ExData_Plotting1")
+household_power_consumption <- read.csv("C:/Users/xavie/OneDrive/Escritorio/data science coursera/household_power_consumption.txt", header=TRUE, sep=";")
+householdnew <- subset(household_power_consumption, household_power_consumption$Date == "1/2/2007" | household_power_consumption$Date == "2/2/2007")
+householdnew$Date <- as.Date(householdnew$Date, format = "%d/%m/%Y")
+householdnew$Time <- strptime(householdnew$Time, format = "%H:%M:%S" )
+householdnew[1:1440,"Time"] <- format(householdnew[1:1440,"Time"],"2007-02-01 %H:%M:%S")
+householdnew[1441:2880,"Time"] <- format(householdnew[1441:2880,"Time"],"2007-02-02 %H:%M:%S")
+attach(householdnew)
+
+
+png("plot4.png", width = 480, height = 480, units = "px")
+par(mfrow = c(2,2))
+with(householdnew, {
+  plot(Time, as.numeric(Global_active_power), ylab = "Global Active Power (kilowatts)", type = "l")
+  plot(Time, as.numeric(Voltage), ylab = "Voltage", xlab = "datetime", type = "l")
+  plot(Time, Sub_metering_1, type = "n", ylab = "Energy sub metering")
+  with(householdnew, lines(Time,as.numeric(Sub_metering_1), col = "black"))
+  with(householdnew, lines(Time, as.numeric(Sub_metering_2), col = "red"))
+  with(householdnew, lines(Time, as.numeric(Sub_metering_3), col = "blue"))
+  legend("topright", col = c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lty = 1)
+  plot(Time, as.numeric(Global_reactive_power), ylab = "Global_reactive_power", xlab = "datetime", type = "l")
+})
+dev.off()
+
